@@ -116,12 +116,12 @@ public class AStarSearchAlgorithm<T extends AbstractNode> extends AbstractAlgori
 		// add top if exists
 		LOGGER.info("Top: (" + (currX - 1) + "," + currY + ") ");
 		int topX = currX - 1;
-		if (topX > 0)
+		if (topX >= 0)
 			adjacent.addAll(findAdjacentForRowFromYPos(currX - 1, currY));
 
 		// add left if exists
 		LOGGER.info("Left: (" + currX + "," + (currY - 1) + ") ");
-		if (currY - 1 > 0) {
+		if (currY - 1 >= 0) {
 			temp = getNodeAt(currX, currY - 1);
 			if (temp != null && temp.isWalkable() && !closedList.contains(temp))
 				adjacent.add(temp);
@@ -133,7 +133,7 @@ public class AStarSearchAlgorithm<T extends AbstractNode> extends AbstractAlgori
 	private List<T> findAdjacentForRowFromYPos(int currX, int currY) throws UndefinedPropertyException {
 		List<T> adjacent = new ArrayList<T>();
 		for (int y = currY - 1; y <= currY + 1; y++) {
-			if (y > 0) {
+			if (y >= 0) {
 				LOGGER.info("* (" + currX + "," + y + ") ");
 				T temp = getNodeAt(currX, y);
 				if (temp != null && temp.isWalkable() && !closedList.contains(temp)) {
