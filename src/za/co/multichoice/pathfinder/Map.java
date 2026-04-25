@@ -113,7 +113,10 @@ public class Map {
 		} 
 			
 		ArrayList nodeListForRowX = this.getRowAt(rowNum);
-		nodeListForRowX.add(columnNum, nodeToAdd);		
+		while (nodeListForRowX.size() <= columnNum) {
+			nodeListForRowX.add(null);
+		}
+		nodeListForRowX.set(columnNum, nodeToAdd);		
 	}
 
 	private boolean sameNodes(AbstractNode nodeToAdd,
@@ -127,11 +130,14 @@ public class Map {
 
 	private ArrayList getRowAt(int x) {
 		ArrayList row;
-		if ((nodes.size() > x) && nodes.get(x)!=null) {
+		while (nodes.size() <= x) {
+			nodes.add(null);
+		}
+		if (nodes.get(x)!=null) {
 			row = (ArrayList) nodes.get(x);
 		} else {
 			row = new ArrayList();
-			nodes.add(row);
+			nodes.set(x, row);
 		} 
 		return row;
 	}
@@ -189,8 +195,8 @@ public class Map {
 	public void plotSolutionOnMap(List solution) {
 		LOGGER.info("SOLUTION: "+solution.size());
 		for (int i = 0; i < solution.size(); i++) {
-			Node node = (Node) (solution.get(i));
-			Node nodeOnMap = (Node) getNode(node.getxPosition(), node.getyPosition());
+			AbstractNode node = (AbstractNode) (solution.get(i));
+			AbstractNode nodeOnMap = getNode(node.getxPosition(), node.getyPosition());
 			nodeOnMap.setTerrainSymbol(PropertyHelper.PATH_SYMBOL);
 			LOGGER.info("(" + (node.getxPosition()) + ", "
 					+ node.getyPosition() + ") ");
@@ -202,9 +208,11 @@ public class Map {
 	}
 
 	public boolean validXY(int x, int y) {
-		ArrayList rowX= (ArrayList) nodes.get(x);
-		return ((x >= 0 && x < getNumRows()) && 
-				(y >= 0 && y < rowX.size()));
+		if (x < 0 || x >= getNumRows()) {
+			return false;
+		}
+		ArrayList rowX = (ArrayList) nodes.get(x);
+		return rowX != null && y >= 0 && y < rowX.size();
 	}
 
 	public AbstractNode getStartNode() {
@@ -219,7 +227,7 @@ public class Map {
     public void drawMapToStdOut() {
     	System.out.println("*****MAP:");
         for (int i = 0; i < nodes.size(); i++) {
-            for (int j = 0; j < nodes.size(); j++) {
+            for (int j = 0; j < getNumColumns(); j++) {
                 AbstractNode node = getNode(i,j);
                 if (node == null)
                 	print(' ');
